@@ -1,0 +1,1943 @@
+Slip 1-1 
+
+#include<stdlib.h> 
+#include<stdio.h> 
+#include<string.h> 
+main(int argc, char *argv[]) 
+{ 
+char d[50]; 
+if(argc==2) 
+{ 
+bzero(d,sizeof(d)); 
+strcat(d,"ls "); 
+strcat(d,"-i "); 
+strcat(d,argv[1]); 
+system(d); 
+} 
+else 
+printf("\nInvalid No. of inputs"); 
+} 
+
+slip1-2
+
+#include <fcntl.h> 
+#include <unistd.h> 
+#include <stdio.h> 
+#include<signal.h> 
+#include<sys/types.h> 
+#include<sys/wait.h> 
+#include <stdlib.h> 
+void Dingdong() 
+{ 
+printf("Ding!"); 
+exit(1); 
+} 
+int main(int argc, char *argv[]) 
+{ 
+if(argc!=3) 
+{ 
+printf("How much seconds you want to sleep the child process\n"); 
+} 
+int PauseSecond=(argv[1]); 
+{ 
+if(fork()==0) 
+{ 
+printf("waiting for alarm to go off\n"); 
+printf("%d second pause",PauseSecond); 
+sleep(PauseSecond); 
+kill(getpid(),SIGALRM); 
+} 
+else { 
+printf("Alarm application starting\n", getpid()); 
+signal(SIGALRM,Dingdong); 
+printf("done"); 
+} 
+} 
+} 
+
+Slip 2-1
+
+#include<stdio.h> 
+#include<unistd.h> 
+#include<dirent.h> 
+#include<string.h> 
+#include<time.h> 
+#include<stdlib.h> 
+#include<sys/stat.h> 
+#include<sys/types.h> 
+int main(int argc,char* argv[]) 
+{ 
+struct stat info; 
+if(argc!=2) 
+{ 
+printf("Enter a filename"); 
+scanf("%s",argv[1]); 
+} 
+if(stat(argv[1],&info)==-1) 
+{ 
+printf("stat error/n"); 
+exit(0); 
+} 
+printf("inode number=%d\n",info.st_ino); 
+printf("size = %d",(long)info.st_size); 
+printf("last file access = %s\n",ctime(&info.st_atime)); 
+printf("notification time = %s\n",ctime(&info.st_mtime)); 
+printf("No of Hardlink = %d\n",info.st_nlink); 
+printf("File Permissions : \n"); 
+printf((info.st_mode && S_IRUSR)?"r":"-"); 
+printf((info.st_mode && S_IWUSR)?"w":"-"); 
+printf((info.st_mode && S_IXUSR)?"x":"-"); 
+return 0; 
+} 
+
+slip 2-2
+Write a C program that catches the ctrl-c (SIGINT) signal for the first time and display the 
+appropriate message and exits on pressing ctrl-c again. 
+#include <stdio.h> 
+#include <unistd.h> 
+#include <stdlib.h> 
+#include <signal.h> 
+void sigfun(int sig) 
+{ 
+printf("You have presses Ctrl-C , please press again to exit"); 
+(void) signal(SIGINT, SIG_DFL); 
+} 
+int main() 
+{ 
+(void) signal(SIGINT, sigfun); 
+while(1) { 
+printf("Hello World! 
+"); 
+sleep(1); 
+} 
+return(0); 
+} 
+
+
+Slip 3-1
+  
+#include<stdlib.h> 
+#include<stdio.h> 
+#include<string.h> 
+main(int argc, char *argv[]) 
+{ 
+char d[50]; 
+if(argc==2) 
+{ 
+bzero(d,sizeof(d)); 
+strcat(d,"ls "); 
+strcat(d,"-i "); 
+strcat(d,argv[1]); 
+system(d); 
+} 
+else 
+printf("\nInvalid No. of inputs"); 
+} 
+ 
+ 
+ 
+ slip 3-2 
+
+#include <signal.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+  
+
+void sighup(); 
+void sigint(); 
+void sigquit(); 
+  
+// driver code 
+void main() 
+{ 
+    int pid; 
+  
+    /* get child process */ 
+    if ((pid = fork()) < 0) { 
+        perror("fork"); 
+        exit(1); 
+    } 
+  
+    if (pid == 0) { /* child */ 
+        signal(SIGHUP, sighup); 
+        signal(SIGINT, sigint); 
+        signal(SIGQUIT, sigquit); 
+        for (;;) 
+            
+    } 
+  
+    else 
+    {  
+        printf("\nPARENT: sending SIGHUP\n\n"); 
+        kill(pid, SIGHUP); 
+  
+        sleep(3); 
+        printf("\nPARENT: sending SIGINT\n\n"); 
+        kill(pid, SIGINT); 
+  
+        sleep(3); 
+        printf("\nPARENT: sending SIGQUIT\n\n"); 
+        kill(pid, SIGQUIT); 
+        sleep(3); 
+    } 
+} 
+  
+void sighup() 
+  
+{ 
+    signal(SIGHUP, sighup); 
+    printf("CHILD: I have received a SIGHUP\n"); 
+} 
+  
+
+void sigint() 
+  
+{ 
+    signal(SIGINT, sigint); 
+    printf("CHILD: I have received a SIGINT\n"); 
+} 
+   
+void sigquit() 
+{ 
+    printf("My DADDY has Killed me!!!\n"); 
+    exit(0); 
+} 
+ 
+ 
+ 
+slip 4-1
+
+#include<stdio.h> 
+#include<unistd.h> 
+int main(int argc,char *argv[]) 
+{ 
+if(access(argv[1],F_OK)==0) 
+printf("File %s exists.",argv[1]); 
+else 
+printf("File not exists."); 
+return 0; 
+} 
+
+slip 4-2
+
+#include <signal.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+
+void sighup(); 
+void sigint(); 
+void sigquit(); 
+// driver code 
+void main() 
+{ 
+int pid; 
+
+if ((pid = fork()) < 0) { 
+  perror("fork"); 
+  exit(1); 
+ } 
+ 
+ if (pid == 0) {
+  signal(SIGHUP, sighup); 
+  signal(SIGINT, sigint); 
+  signal(SIGQUIT, sigquit); 
+  for (;;) 
+   ; 
+ } 
+ 
+ else 
+ { 
+  printf("\nPARENT: sending SIGHUP\n\n"); 
+  kill(pid, SIGHUP); 
+ 
+  sleep(3); 
+  printf("\nPARENT: sending SIGINT\n\n"); 
+  kill(pid, SIGINT); 
+ 
+  sleep(3); 
+  printf("\nPARENT: sending SIGQUIT\n\n"); 
+  kill(pid, SIGQUIT); 
+  sleep(3); 
+ } 
+} 
+ 
+
+void sighup() 
+ 
+{ 
+ signal(SIGHUP, sighup); 
+ printf("CHILD: I have received a SIGHUP\n"); 
+} 
+ 
+ 
+void sigint() 
+ 
+{ 
+signal(SIGINT, sigint); 
+printf("CHILD: I have received a SIGINT\n"); 
+} 
+
+void sigquit() 
+{ 
+printf("My DADDY has Killed me!!!\n"); 
+exit(0); 
+} 
+
+slip 5-1
+
+#include<stdio.h> 
+#include<dirent.h> 
+int main() 
+{ 
+DIR *d;  
+int cnt=0; 
+struct dirent *dir; 
+d=opendir("."); 
+if(d==NULL) 
+{ 
+printf("Could not open the current directory"); 
+return(0); 
+} 
+while((dir=readdir(d))!=NULL)
+{
+printf("%s\n",dir->d_name); 
+cnt++; 
+} 
+printf("\nTotal no. of files in the current directory=%d\n",cnt); 
+closedir(d); 
+return 0;
+}
+
+slip 5-2
+  
+#include<stdio.h> 
+#include<unistd.h> 
+int main() { 
+int pipefds[2]; 
+int returnstatus; 
+char writemessages[3][20]={"Hello World", "Hello SPPU","Linux is Funny"}; 
+char readmessage[20]; 
+returnstatus = pipe(pipefds); 
+if (returnstatus == -1) { 
+printf("Unable to create pipe\n"); 
+return 1; 
+} 
+int child = fork(); 
+if(child==0){ 
+printf("Child is Writing to pipe - Message 1 is %s\n", writemessages[0]); 
+write(pipefds[1], writemessages[0], sizeof(writemessages[0])); 
+printf("Child is Writing to pipe - Message 2 is %s\n", writemessages[1]); 
+write(pipefds[1], writemessages[1], sizeof(writemessages[1])); 
+printf("Child is Writing to pipe - Message 3 is %s\n", writemessages[2]); 
+write(pipefds[1], writemessages[2], sizeof(writemessages[2])); 
+} 
+else 
+{ 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 1 is %s\n", 
+readmessage); 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 2 is %s\n", 
+readmessage); 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 3 is %s\n", 
+readmessage); 
+} 
+return 0; 
+} 
+
+
+slip 6-1
+  
+#include<stdio.h> 
+#include<dirent.h> 
+#include<string.h> 
+#include<sys/stat.h> 
+#include<time.h> 
+#include<stdlib.h> 
+int main(intargc, char *argv[]) 
+{ 
+char in[100],st[100],*ch,*ch1,c,buff[512]; 
+DIR *dp; 
+int i; 
+structdirent *ep; 
+struct stat sb; 
+charmon[100]; 
+dp=opendir("./"); 
+if (dp != NULL) 
+{ 
+while(ep =readdir(dp)) 
+{ 
+if(stat(ep->d_name,&sb) == -1) 
+{ 
+perror("stat"); 
+exit(EXIT_SUCCESS); 
+} 
+strcpy(mon,ctime(&sb.st_ctime)); 
+ch=strtok(mon," "); 
+ch=strtok(NULL,","); 
+ch1=strtok(ch," "); 
+if((strcmp(ch1,argv[1]))==0) 
+{ 
+printf("%s\t\t%s",ep->d_name,ctime(&sb.st_ctime)); 
+} 
+} 
+(void)closedir(dp); 
+} 
+return 0; 
+} 
+
+slip 6-2
+
+#include<sys/types.h> 
+#include<sys/wait.h> 
+#include<unistd.h> 
+#include<time.h> 
+#include<sys/times.h> 
+#include<stdio.h> 
+#include<stdlib.h> 
+int main(void) 
+{ 
+int i, status; 
+pid_t pid; 
+time_t currentTime; 
+struct tms cpuTime; 
+if((pid = fork())==-1) 
+{ 
+perror("\nfork error"); 
+exit(EXIT_FAILURE); 
+} 
+else if(pid==0) 
+{ 
+time(&currentTime); 
+printf("\nChild process started at %s",ctime(&currentTime)); 
+for(i=0;i<5;i++) 
+{ 
+printf("\nCounting= %dn",i);  
+sleep(1); 
+} 
+time(&currentTime); 
+printf("\nChild process ended at %s",ctime(&currentTime)); 
+exit(EXIT_SUCCESS); 
+} 
+else 
+{ 
+time(&currentTime);  
+printf("\nParent process started at %s ",ctime(&currentTime)); 
+if(wait(&status)== -1)  
+perror("\n wait error"); 
+if(WIFEXITED(status)) 
+printf("\nChild process ended normally"); 
+else 
+printf("\nChild process did not end normally"); 
+if(times(&cpuTime)<0) //Get process time 
+perror("\nTimes error"); 
+else 
+{ 
+printf("\nParent process user time= %fn",((double) 
+cpuTime.tms_utime)); 
+printf("\nParent process system time = %fn",((double) 
+cpuTime.tms_stime)); 
+printf("\nChild process user time = %fn",((double) 
+cpuTime.tms_cutime)); 
+printf("\nChild process system time = %fn",((double) 
+cpuTime.tms_cstime)); 
+} 
+time(&currentTime); 
+printf("\nParent process ended at %s",ctime(&currentTime)); 
+exit(EXIT_SUCCESS); 
+} 
+} 
+
+slip 7-1
+  
+#include<stdlib.h> 
+#include<stdio.h> 
+#include<string.h> 
+main(int argc, char *argv[]) 
+{ 
+char d[50]; 
+if(argc==2) 
+{ 
+bzero(d,sizeof(d)); 
+strcat(d,"ls "); 
+strcat(d,"> "); 
+strcat(d,argv[1]); 
+system(d); 
+} 
+else 
+printf("\nInvalid No. of inputs"); 
+} 
+ 
+slip 7-2
+
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include<errno.h>  
+#include<sys/wait.h>  
+#include <unistd.h>  
+int main()
+{  
+     int a[2];  
+   
+     
+    pipe(a);  
+   
+    if(!fork())  
+    {  
+         
+        close(1);  
+           
+          
+        dup(a[1]);  
+           
+        
+        close(a[0]);  
+           
+          
+        execlp("ls","ls",NULL);  
+    }  
+    else 
+    {  
+         
+        close(0);  
+           
+         
+        dup(a[0]);  
+           
+          
+        close(a[1]);  
+           
+         
+        execlp("wc","wc",NULL);  
+}  
+}  
+
+
+slip 8-1
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <fcntl.h> 
+int main(void) { 
+int number1, number2, sum; 
+int input_fds = open("./input.txt", O_RDONLY); 
+if(dup2(input_fds, STDIN_FILENO) < 0) { 
+printf("Unable to duplicate file descriptor."); 
+exit(EXIT_FAILURE); 
+} 
+scanf("%d %d", &number1, &number2); 
+sum = number1 + number2; 
+printf("%d + %d = %d\n", number1, number2, sum); 
+return EXIT_SUCCESS; 
+} 
+
+slip 8-2
+
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include<errno.h>  
+#include<sys/wait.h>  
+#include <unistd.h>  
+int main(){  
+        
+    int a[2];  
+   
+    
+    pipe(a);  
+   
+    if(!fork())  
+    {  
+          
+        close(1);  
+
+        dup(a[1]);  
+           
+          
+        close(a[0]);  
+           
+        
+        execlp("ls","ls",NULL);  
+    }  
+    else 
+    {  
+        
+        close(0);  
+           
+         
+        dup(a[0]);  
+           
+        
+        close(a[1]);  
+           
+       
+        execlp("wc","wc",NULL);  
+}  
+}  
+
+
+slip 9-1
+  
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+int main() { 
+int pipe_fd[2];
+ 
+    
+    if (pipe(pipe_fd) == -1) { 
+        perror("Pipe creation failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    pid_t child_pid = fork(); 
+ 
+    if (child_pid == -1) { 
+        perror("Fork failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    if (child_pid == 0) { 
+         
+ 
+        close(pipe_fd[1]); 
+ 
+        char buffer[100]; 
+        ssize_t bytes_read = read(pipe_fd[0], buffer, sizeof(buffer)); 
+        close(pipe_fd[0]);
+        if (bytes_read == -1) { 
+            perror("Read from pipe failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+ 
+        printf("Child received: %.*s\n", (int)bytes_read, buffer); 
+ 
+    } else { 
+        
+ 
+        close(pipe_fd[0]);
+ 
+        const char *message = "Hello from parent!"; 
+        ssize_t bytes_written = write(pipe_fd[1], message, strlen(message)); 
+        close(pipe_fd[1]);  
+ 
+        if (bytes_written == -1) { 
+            perror("Write to pipe failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+ 
+        printf("Parent sent: %s\n", message);
+ } 
+ 
+    return 0;
+}
+
+ 
+slip 9-2
+
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <sys/stat.h> 
+#include <unistd.h> 
+ 
+void identifyFileType(const char *path) { 
+    struct stat fileStat; 
+  
+    if (stat(path, &fileStat) == -1) { 
+        perror("Error in stat"); 
+        return; 
+    } 
+  
+    if (S_ISREG(fileStat.st_mode)) { 
+        printf("%s is a regular file.\n", path); 
+    } else if (S_ISDIR(fileStat.st_mode)) { 
+        printf("%s is a directory.\n", path); 
+    } else if (S_ISCHR(fileStat.st_mode)) { 
+        printf("%s is a character device.\n", path); 
+    } else if (S_ISBLK(fileStat.st_mode)) { 
+        printf("%s is a block device.\n", path); 
+    } else if (S_ISFIFO(fileStat.st_mode)) { 
+        printf("%s is a FIFO or pipe.\n", path); 
+    } else if (S_ISLNK(fileStat.st_mode)) { 
+        printf("%s is a symbolic link.\n", path); 
+    } else if (S_ISSOCK(fileStat.st_mode)) { 
+        printf("%s is a socket.\n", path); 
+    } else { 
+        printf("%s is of unknown type.\n", path); 
+    } 
+} 
+ 
+int main(int argc, char *argv[]) { 
+    if (argc != 2) { 
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]); 
+        return 1; 
+    } 
+ 
+    const char *filename = argv[1]; 
+ 
+    identifyFileType(filename); 
+ 
+    return 0; 
+} 
+ 
+ 
+slip 10-1
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include <sys/wait.h> 
+ 
+int main() { 
+    int pipe_fd[2];  
+ 
+    
+    if (pipe(pipe_fd) == -1) 
+{ 
+        perror("Pipe creation failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    pid_t child_pid1 = fork(); 
+ 
+    if (child_pid1 == -1) { 
+        perror("Fork failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    if (child_pid1 == 0) { 
+        // First child process (write to the pipe) 
+ 
+        close(pipe_fd[0]);  
+        dup2(pipe_fd[1], STDOUT_FILENO); 
+ 
+      
+        execlp("ls", "ls", NULL); 
+ 
+        perror("Exec failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    pid_t child_pid2 = fork(); 
+ 
+    if (child_pid2 == -1) { 
+        perror("Fork failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    if (child_pid2 == 0) { 
+        
+ 
+        close(pipe_fd[1]); 
+        dup2(pipe_fd[0], STDIN_FILENO); // Redirect stdin to the pipe 
+ 
+        
+        execlp("wc", "wc", "-l", NULL); 
+ 
+        perror("Exec failed");
+        exit(EXIT_FAILURE); 
+    } 
+ 
+ 
+    close(pipe_fd[0]); 
+    close(pipe_fd[1]);
+ 
+    waitpid(child_pid1, NULL, 0); 
+    waitpid(child_pid2, NULL, 0); 
+ 
+    return 0; 
+} 
+ 
+ 
+ slip 10-2
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+ 
+int main() { 
+    int pipe_fd[2];  
+ 
+    // Create the pipe 
+    if (pipe(pipe_fd) == -1) { 
+        perror("Pipe creation failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    pid_t child_pid = fork(); 
+ 
+    if (child_pid == -1) { 
+        perror("Fork failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    if (child_pid == 0) { 
+         
+ 
+        close(pipe_fd[1]); 
+ 
+        char buffer[100]; 
+        ssize_t bytes_read = read(pipe_fd[0], buffer, sizeof(buffer)); 
+        close(pipe_fd[0]); 
+ 
+        if (bytes_read == -1) { 
+            perror("Read from pipe failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+ 
+        printf("Child received: %.*s\n", (int)bytes_read, buffer); 
+ 
+    } else { 
+        
+        close(pipe_fd[0]); 
+ 
+        const char *message = "Hello from parent!"; 
+        ssize_t bytes_written = write(pipe_fd[1], message, strlen(message)); 
+        close(pipe_fd[1]); 
+ 
+        if (bytes_written == -1) { 
+            perror("Write to pipe failed"); 
+            exit(EXIT_FAILURE); 
+        } 
+ 
+        printf("Parent sent: %s\n", message); 
+    } 
+ 
+    return 0; 
+} 
+ 
+ 
+ 
+slip 11-1  
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/resource.h> 
+ 
+void printLimits() { 
+    struct rlimit limits; 
+ 
+    // Get the current resource limits for file descriptors 
+    if (getrlimit(RLIMIT_NOFILE, &limits) == -1) { 
+        perror("getrlimit for RLIMIT_NOFILE failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("Current maximum file descriptors limit: %ld\n", (long)limits.rlim_cur); 
+ 
+    // Get the current resource limits for stack size 
+    if (getrlimit(RLIMIT_STACK, &limits) == -1) { 
+        perror("getrlimit for RLIMIT_STACK failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("Current maximum stack size limit: %ld bytes\n", (long)limits.rlim_cur); 
+} 
+ 
+void setLimits() { 
+    struct rlimit new_limits; 
+ 
+    // Set the new maximum file descriptors limit 
+    new_limits.rlim_cur = 1024;  // Set to the desired value 
+    new_limits.rlim_max = 1024;  // Set to the same value as rlim_cur for simplicity 
+ 
+    if (setrlimit(RLIMIT_NOFILE, &new_limits) == -1) { 
+        perror("setrlimit for RLIMIT_NOFILE failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("New maximum file descriptors limit set: %ld\n", (long)new_limits.rlim_cur); 
+ 
+    // Set the new maximum stack size limit 
+    new_limits.rlim_cur = 1024 * 1024 * 2;  // Set to the desired value (2 MB) 
+    new_limits.rlim_max = 1024 * 1024 * 2;  // Set to the same value as rlim_cur for simplicity 
+ 
+    if (setrlimit(RLIMIT_STACK, &new_limits) == -1) { 
+        perror("setrlimit for RLIMIT_STACK failed"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("New maximum stack size limit set: %ld bytes\n", (long)new_limits.rlim_cur); 
+} 
+ 
+int main() { 
+    printf("Before setting limits:\n"); 
+    printLimits(); 
+ 
+    printf("\nSetting new limits:\n"); 
+    setLimits(); 
+ 
+    printf("\nAfter setting limits:\n"); 
+    printLimits(); 
+ 
+    return 0; 
+} 
+ 
+ 
+ slip 11-2   
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <fcntl.h> 
+#include <unistd.h> 
+ 
+int main() { 
+     
+    int fileDescriptor = open("output.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666); 
+ 
+    if (fileDescriptor == -1) { 
+        perror("Error opening file"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+     
+    if (dup2(fileDescriptor, STDOUT_FILENO) == -1) { 
+        perror("Error duplicating file descriptor"); 
+        close(fileDescriptor); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+   
+    close(fileDescriptor); 
+ 
+     
+    printf("This will be written to output.txt.\n"); 
+ 
+     
+    if (dup2(STDOUT_FILENO, 1) == -1) { 
+        perror("Error restoring standard output"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+     
+    printf("This will be printed to the console.\n"); 
+ 
+    return 0; 
+} 
+ 
+ 
+slip 12-1
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include <sys/wait.h> 
+   
+int main(void) 
+{ 
+    pid_t pid = fork(); 
+      
+    if ( pid == 0 ) 
+    { 
+       
+       execl("/bin/sh", "bin/sh", "-c", "./nopath", "NULL"); 
+    } 
+  
+    int status; 
+      
+    waitpid(pid, &status, 0); 
+  
+    if ( WIFEXITED(status) ) 
+    { 
+        int exit_status = WEXITSTATUS(status);         
+        printf("Exit status of the child was %d\n", exit_status); 
+    } 
+    return 0; 
+} 
+ 
+ 
+slip 12-2 
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/stat.h> 
+ 
+struct FileInfo { 
+    char *name; 
+    off_t size; 
+}; 
+ 
+
+int compareFileInfo(const void *a, const void *b) { 
+    return ((struct FileInfo *)a)->size - ((struct FileInfo *)b)->size; 
+} 
+ 
+int main(int argc, char *argv[]) { 
+     
+    if (argc < 2) { 
+        fprintf(stderr, "Usage: %s file1 file2 file3 ...\n", argv[0]); 
+        return EXIT_FAILURE; 
+    } 
+ 
+    
+    struct FileInfo *files = (struct FileInfo *)malloc((argc - 1) * sizeof(struct FileInfo)); 
+ 
+     
+    for (int i = 1; i < argc; ++i) { 
+        files[i - 1].name = argv[i]; 
+ 
+        struct stat fileStat; 
+        if (stat(argv[i], &fileStat) == -1) { 
+            perror("Error getting file size"); 
+            return EXIT_FAILURE; 
+        } 
+ 
+        files[i - 1].size = fileStat.st_size; 
+    } 
+ 
+     
+    qsort(files, argc - 1, sizeof(struct FileInfo), compareFileInfo); 
+ 
+    
+    printf("File names in ascending order based on size:\n"); 
+    for (int i = 0; i < argc - 1; ++i) { 
+        printf("%s - %ld bytes\n", files[i].name, (long)files[i].size); 
+    } 
+ 
+     
+    free(files); 
+ 
+    return EXIT_SUCCESS; 
+} 
+ 
+
+slip 13-1   
+ 
+#include <stdio.h> 
+#include <ospace/unix.h> 
+int child_function() 
+{ 
+while (true)  
+{ 
+Printf("Child loop\n"); 
+os_this_process::sleep( 1 ); 
+} 
+return 0;
+} 
+int main() 
+{ 
+os_unix_toolkit initialize; 
+os_process child ( child function ); 
+os_this_process::sleep( 4 ); 
+printf("child.suspend()\n"); 
+child.suspend(); 
+printf("Parent sleeps for 4 seconds\n"); 
+os_this_process::sleep (4); 
+printf("child.resume()");  
+child.resume (); 
+os_this_process::sleep (4); 
+printf("child.terminate()"); 
+child.terminate (); 
+printf("Parent finished"); 
+return 0; 
+} 
+
+slip 13-2 
+#include<stdio.h> 
+#include<dirent.h> 
+ 
+int main(void) 
+{ 
+    DIR *d; 
+    struct dirent *dir; 
+    d = opendir("."); 
+    if (d) 
+    { 
+        while ((dir = readdir(d)) != NULL) 
+        { 
+            printf("%s\n", dir->d_name); 
+        } 
+        closedir(d); 
+    } 
+    return(0); 
+} 
+ 
+
+ slip 14-1   
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <dirent.h> 
+#include <sys/stat.h> 
+ 
+void listFilesWithSize(char *path, off_t sizeThreshold) { 
+    DIR *dir; 
+    struct dirent *entry; 
+    struct stat fileStat; 
+ 
+    
+    dir = opendir(path); 
+ 
+    if (dir == NULL) { 
+        perror("Error opening directory"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("Files larger than %ld Bytes in %s:\n", (long)sizeThreshold, path); 
+ 
+    
+    while ((entry = readdir(dir)) != NULL) { 
+       
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) { 
+            continue; 
+        } 
+ 
+    
+        char filePath[256]; 
+        snprintf(filePath, sizeof(filePath), "%s/%s", path, entry->d_name); 
+ 
+      
+        if (stat(filePath, &fileStat) == -1) { 
+            perror("Error getting file information"); 
+            exit(EXIT_FAILURE); 
+        } 
+ 
+        
+        if (S_ISREG(fileStat.st_mode) && fileStat.st_size > sizeThreshold) { 
+            printf("%s - %ld Bytes\n", entry->d_name, (long)fileStat.st_size); 
+        } 
+    } 
+ 
+    closedir(dir); 
+} 
+ 
+ 
+int main() { 
+    char path[256]; 
+    off_t sizeThreshold; 
+ 
+printf("Enter the directory path: "); 
+scanf("%s", path); 
+
+printf("Enter the size threshold in Bytes: "); 
+scanf("%ld", &sizeThreshold); 
+
+listFilesWithSize(path, sizeThreshold); 
+return 0; 
+} 
+
+slip 14-2 
+
+#include<stdio.h> 
+#include<unistd.h> 
+#include<dirent.h> 
+#include<string.h> 
+#include<time.h> 
+#include<stdlib.h> 
+#include<sys/stat.h> 
+#include<sys/types.h> 
+int main(int argc,char* argv[]) 
+{ 
+struct stat info; 
+if(argc!=2) 
+{ 
+printf("Enter a filename"); 
+scanf("%s",argv[1]); 
+} 
+if(stat(argv[1],&info)==-1) 
+{ 
+printf("stat error/n"); 
+exit(0); 
+} 
+printf("inode number=%d\n",info.st_ino); 
+printf("size = %d",(long)info.st_size); 
+printf("last file access = %s\n",ctime(&info.st_atime)); 
+printf("notification time = %s\n",ctime(&info.st_mtime)); 
+printf("No of Hardlink = %d\n",info.st_nlink); 
+printf("File Permissions : \n"); 
+printf((info.st_mode && S_IRUSR)?"r":"-"); 
+printf((info.st_mode && S_IWUSR)?"w":"-"); 
+printf((info.st_mode && S_IXUSR)?"x":"-"); 
+return 0; 
+} 
+
+
+slip 15-1
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <dirent.h> 
+#include <sys/stat.h> 
+ 
+void listFilesWithSize(char *path, off_t sizeThreshold) { 
+    DIR *dir; 
+    struct dirent *entry; 
+    struct stat fileStat; 
+ 
+    
+    dir = opendir(path); 
+ 
+    if (dir == NULL) { 
+        perror("Error opening directory"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("Files larger than %ld Bytes in %s:\n", (long)sizeThreshold, path); 
+ 
+    
+    while ((entry = readdir(dir)) != NULL) { 
+        
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) { 
+            continue; 
+        } 
+ 
+       
+        char filePath[256]; 
+        snprintf(filePath, sizeof(filePath), "%s/%s", path, entry->d_name); 
+ 
+        if (stat(filePath, &fileStat) == -1) { 
+            perror("Error getting file information"); 
+            exit(EXIT_FAILURE); 
+        } 
+
+        if (S_ISREG(fileStat.st_mode) && fileStat.st_size > sizeThreshold) { 
+            printf("%s - %ld Bytes\n", entry->d_name, (long)fileStat.st_size); 
+        } 
+    } 
+ 
+    
+    closedir(dir); 
+} 
+ 
+ 
+int main() { 
+    char path[256]; 
+    off_t sizeThreshold; 
+ 
+printf("Enter the directory path: "); 
+scanf("%s", path); 
+printf("Enter the size threshold in Bytes: "); 
+scanf("%ld", &sizeThreshold); 
+ 
+listFilesWithSize(path, sizeThreshold); 
+return 0; 
+} 
+
+
+
+slip 15-2
+ 
+#include <signal.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+  
+
+void sighup(); 
+void sigint(); 
+void sigquit(); 
+  
+
+void main() 
+{ 
+    int pid; 
+  
+    if ((pid = fork()) < 0) { 
+        perror("fork"); 
+        exit(1); 
+    } 
+  
+    if (pid == 0) {  
+        signal(SIGHUP, sighup); 
+        signal(SIGINT, sigint); 
+        signal(SIGQUIT, sigquit); 
+        for (;;) 
+            
+    }  
+  
+    else  
+    { 
+        printf("\nPARENT: sending SIGHUP\n\n"); 
+        kill(pid, SIGHUP); 
+  
+        sleep(3); 
+        printf("\nPARENT: sending SIGINT\n\n"); 
+        kill(pid, SIGINT); 
+  
+        sleep(3);  
+        printf("\nPARENT: sending SIGQUIT\n\n"); 
+        kill(pid, SIGQUIT); 
+        sleep(3); 
+    } 
+} 
+  
+
+void sighup() 
+  
+{ 
+    signal(SIGHUP, sighup);  
+    printf("CHILD: I have received a SIGHUP\n"); 
+} 
+  
+ 
+void sigint() 
+  
+{ 
+    signal(SIGINT, sigint); /* reset signal */ 
+    printf("CHILD: I have received a SIGINT\n"); 
+} 
+  
+void sigquit() 
+{ 
+    printf("My DADDY has Killed me!!!\n"); 
+    exit(0); 
+}
+
+slip 16-1
+  
+#include<stdio.h> 
+#include<dirent.h> 
+#include<string.h> 
+#include<sys/stat.h> 
+#include<time.h> 
+#include<stdlib.h> 
+int main(intargc, char *argv[]) 
+{ 
+char in[100],st[100],*ch,*ch1,c,buff[512]; 
+DIR *dp; 
+int i; 
+structdirent *ep; 
+struct stat sb; 
+charmon[100]; 
+dp=opendir("./"); 
+if (dp != NULL) 
+{ 
+while(ep =readdir(dp)) 
+{ 
+if(stat(ep->d_name,&sb) == -1) 
+{ 
+perror("stat"); 
+exit(EXIT_SUCCESS); 
+} 
+strcpy(mon,ctime(&sb.st_ctime)); 
+ch=strtok(mon," "); 
+ch=strtok(NULL,","); 
+ch1=strtok(ch," "); 
+if((strcmp(ch1,argv[1]))==0) 
+{ 
+printf("%s\t\t%s",ep->d_name,ctime(&sb.st_ctime)); 
+} 
+} 
+(void)closedir(dp); 
+} 
+return 0; 
+}
+ 
+slip 16-2
+
+#include <signal.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+
+void sighup(); 
+void sigint(); 
+void sigquit(); 
+ 
+void main() 
+{ 
+int pid; 
+ 
+if ((pid = fork()) < 0) { 
+  perror("fork"); 
+  exit(1); 
+ } 
+ 
+ if (pid == 0) { /* child */ 
+  signal(SIGHUP, sighup); 
+  signal(SIGINT, sigint); 
+  signal(SIGQUIT, sigquit); 
+  for (;;) 
+   
+ } 
+ 
+ else 
+  printf("\nPARENT: sending SIGHUP\n\n"); 
+  kill(pid, SIGHUP); 
+ 
+  sleep(3); 
+  printf("\nPARENT: sending SIGINT\n\n"); 
+  kill(pid, SIGINT); 
+ 
+  sleep(3);  
+  printf("\nPARENT: sending SIGQUIT\n\n"); 
+  kill(pid, SIGQUIT); 
+  sleep(3); 
+ } 
+} 
+ 
+void sighup() 
+ 
+{ 
+ signal(SIGHUP, sighup); 
+ printf("CHILD: I have received a SIGHUP\n");
+// sigint() function definition 
+void sigint() 
+ 
+{ 
+signal(SIGINT, sigint); 
+printf("CHILD: I have received a SIGINT\n"); 
+} 
+
+void sigquit() 
+{ 
+printf("My DADDY has Killed me!!!\n"); 
+exit(0); 
+} 
+
+
+slip 17-1
+ 
+#include<stdio.h> 
+#include<dirent.h> 
+int main() 
+{ 
+DIR *d;  
+int cnt=0; 
+struct dirent *dir; 
+d=opendir("."); 
+if(d==NULL) 
+{ 
+printf("Could not open the current directory"); 
+return(0); 
+} 
+while((dir=readdir(d))!=NULL)
+{
+printf("%s\n",dir->d_name); 
+cnt++; 
+} 
+printf("\nTotal no. of files in the current directory=%d\n",cnt); 
+closedir(d); 
+return 0;
+}
+
+
+slip 17-2
+ 
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include<errno.h>  
+#include<sys/wait.h>  
+#include <unistd.h>  
+int main(){  
+    
+    int a[2];  
+   
+     
+    pipe(a);  
+   
+    if(!fork())  
+    {  
+        
+        close(1);  
+           
+        dup(a[1]);  
+           
+        
+        close(a[0]);  
+           
+         
+        execlp("ls","ls",NULL);  
+    }  
+    else 
+    
+    {  
+          
+        close(0);  
+           
+        
+        dup(a[0]);  
+           
+          
+        close(a[1]);  
+           
+  
+        execlp("wc","wc",NULL);  
+}  
+}  
+
+slip 18-1
+ 
+#include<stdio.h> 
+#include<unistd.h> 
+int main(int argc,char *argv[]) 
+{ 
+if(access(argv[1],F_OK)==0) 
+printf("File %s exists.",argv[1]); 
+else 
+printf("File not exists."); 
+return 0; 
+} 
+
+slip 18-2
+
+#include<stdio.h> 
+#include<unistd.h> 
+int main() { 
+int pipefds[2]; 
+int returnstatus; 
+char writemessages[3][20]={"Hello World", "Hello SPPU","Linux is Funny"}; 
+char readmessage[20]; 
+returnstatus = pipe(pipefds); 
+if (returnstatus == -1) { 
+printf("Unable to create pipe\n"); 
+return 1; 
+} 
+int child = fork(); 
+if(child==0){ 
+printf("Child is Writing to pipe - Message 1 is %s\n", writemessages[0]); 
+write(pipefds[1], writemessages[0], sizeof(writemessages[0])); 
+printf("Child is Writing to pipe - Message 2 is %s\n", writemessages[1]); 
+write(pipefds[1], writemessages[1], sizeof(writemessages[1])); 
+printf("Child is Writing to pipe - Message 3 is %s\n", writemessages[2]); 
+write(pipefds[1], writemessages[2], sizeof(writemessages[2])); 
+} 
+else 
+{ 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 1 is %s\n", 
+readmessage); 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 2 is %s\n", 
+readmessage); 
+read(pipefds[0], readmessage, sizeof(readmessage)); 
+printf("Parent Process is Reading from pipe – Message 3 is %s\n", 
+readmessage); 
+} 
+return 0; 
+} 
+
+slip 19-1
+
+
+#include<stdio.h> 
+#include<sys/stat.h> 
+#include<unistd.h> 
+#include<fcntl.h> 
+int main(int argc, char *argv[]) 
+{ 
+struct stat fileStat; 
+if(argc!=3) 
+{  
+} 
+printf("Invalid number of arguments "); 
+return 1; 
+int file1 = open(argv[1], O_RDONLY); 
+if(file1 < 0) 
+{ 
+fprintf(stderr, "error opening file1\n"); 
+return 1; 
+} 
+int file2 = open(argv[2], O_RDONLY); 
+if(file2 < 0) 
+{ 
+fprintf(stderr, "error opening file2\n"); 
+return 1; 
+} 
+if(fstat(file1,&fileStat)<0)  
+return 1; 
+printf("File1 is:%s and Inode:%ld\n",argv[1],fileStat.st_ino); 
+if(fstat(file2,&fileStat)<0)  
+return 1; 
+printf("File2 is:%s and Inode:%ld\n",argv[2],fileStat.st_ino); 
+} 
+
+slip 19-2
+ 
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include<errno.h>  
+#include<sys/wait.h>  
+#include <unistd.h>  
+int main(){  
+         
+    int a[2];    
+    pipe(a);  
+   
+    if(!fork())  
+    {  
+         
+        close(1);  
+
+        dup(a[1]);  
+           
+         
+        close(a[0]);  
+           
+          
+        execlp("ls","ls",NULL);  
+    }  
+    else 
+    {  
+        
+        close(0);  
+           
+
+        dup(a[0]);  
+           
+      
+        close(a[1]);  
+            
+        execlp("wc","wc",NULL);  
+}  
+}  
+
+slip 20-1
+  
+#include <stdio.h> 
+#include <ospace/unix.h> 
+int child_function() 
+{ 
+while (true)  
+{ 
+Printf("Child loop\n"); 
+os_this_process::sleep( 1 ); 
+} 
+return 0;  
+} 
+int main() 
+{ 
+os_unix_toolkit initialize; 
+os_process child ( child function );  
+os_this_process::sleep( 4 ); 
+printf("child.suspend()\n"); 
+child.suspend(); 
+printf("Parent sleeps for 4 seconds\n"); 
+os_this_process::sleep (4); 
+printf("child.resume()");  
+child.resume (); 
+os_this_process::sleep (4); 
+printf("child.terminate()"); 
+child.terminate (); 
+printf("Parent finished"); 
+return 0; 
+}
+
+slip 20-2
+
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <sys/stat.h> 
+#include <unistd.h> 
+ 
+void identifyFileType(const char *path) { 
+    struct stat fileStat; 
+ 
+    if (stat(path, &fileStat) == -1) { 
+        perror("Error in stat"); 
+        return; 
+    } 
+ 
+    if (S_ISREG(fileStat.st_mode)) { 
+        printf("%s is a regular file.\n", path); 
+    } else if (S_ISDIR(fileStat.st_mode)) { 
+        printf("%s is a directory.\n", path); 
+    } else if (S_ISCHR(fileStat.st_mode)) { 
+        printf("%s is a character device.\n", path); 
+    } else if (S_ISBLK(fileStat.st_mode)) { 
+        printf("%s is a block device.\n", path); 
+    } else if (S_ISFIFO(fileStat.st_mode)) {
+ printf("%s is a FIFO or pipe.\n", path); 
+    } else if (S_ISLNK(fileStat.st_mode)) { 
+        printf("%s is a symbolic link.\n", path); 
+    } else if (S_ISSOCK(fileStat.st_mode)) { 
+        printf("%s is a socket.\n", path); 
+    } else { 
+        printf("%s is of unknown type.\n", path); 
+    } 
+} 
+ 
+int main(int argc, char *argv[]) { 
+    if (argc != 2) { 
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]); 
+        return 1; 
+    } 
+ 
+    const char *filename = argv[1]; 
+ 
+    identifyFileType(filename); 
+ 
+    return 0; 
+} 
+ 
+ 
+slip 21-1
+
+#include<stdio.h> 
+#include<dirent.h> 
+int main() 
+{ 
+DIR *d;  
+int cnt=0; 
+struct dirent *dir; // pointer for directory entry 
+d=opendir("."); 
+if(d==NULL) 
+{ 
+printf("Could not open the current directory"); 
+return(0); 
+} 
+while((dir=readdir(d))!=NULL)
+{
+printf("%s\n",dir->d_name); 
+cnt++; 
+} 
+printf("\nTotal no. of files in the current directory=%d\n",cnt); 
+closedir(d); 
+return 0;
+}
+
+slip 21-2
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <sys/stat.h> 
+ 
+struct FileInfo { 
+    char *name; 
+    off_t size; 
+}; 
+  
+int compareFileInfo(const void *a, const void *b) { 
+    return ((struct FileInfo *)a)->size - ((struct FileInfo *)b)->size; 
+} 
+ 
+int main(int argc, char *argv[]) { 
+    
+    if (argc < 2) { 
+        fprintf(stderr, "Usage: %s file1 file2 file3 ...\n", argv[0]); 
+        return EXIT_FAILURE; 
+    } 
+ 
+    
+    struct FileInfo *files = (struct FileInfo *)malloc((argc - 1) * sizeof(struct FileInfo)); 
+ 
+     
+    for (int i = 1; i < argc; ++i) { 
+        files[i - 1].name = argv[i]; 
+ 
+        struct stat fileStat; 
+        if (stat(argv[i], &fileStat) == -1) { 
+            perror("Error getting file size"); 
+            return EXIT_FAILURE; 
+        } 
+ 
+        files[i - 1].size = fileStat.st_size; 
+    } 
+ 
+    
+    qsort(files, argc - 1, sizeof(struct FileInfo), compareFileInfo); 
+ 
+    
+    printf("File names in ascending order based on size:\n"); 
+    for (int i = 0; i < argc - 1; ++i) { 
+        printf("%s - %ld bytes\n", files[i].name, (long)files[i].size); 
+    } 
+ 
+  
+    free(files); 
+ 
+    return EXIT_SUCCESS; 
+} 
+ 
+
+slip 22-1
+   
+#include<stdlib.h> 
+#include<stdio.h> 
+#include<string.h> 
+main(int argc, char *argv[]) 
+{ 
+char d[50]; 
+if(argc==2) 
+{ 
+bzero(d,sizeof(d)); 
+strcat(d,"ls "); 
+strcat(d,"> "); 
+strcat(d,argv[1]); 
+system(d); 
+} 
+else 
+printf("\nInvalid No. of inputs");
+}
+
+
+slip 22-2
+  
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <fcntl.h>  
+#include<errno.h>  
+#include<sys/wait.h>  
+#include <unistd.h>  
+int main(){  
+        
+    int a[2];  
+   
+      
+    pipe(a);  
+   
+    if(!fork())  
+    {  
+         
+        close(1);  
+           
+        
+        dup(a[1]);  
+           
+          
+        close(a[0]);  
+           
+         
+        execlp("ls","ls",NULL);  
+    }  
+    else 
+    {  
+         
+        close(0);  
+           
+        dup(a[0]);  
+           
+        
+        close(a[1]);  
+           
+  
+        execlp("wc","wc",NULL);  
+}  
+}  
+
+slip 23-1
+
+#include<stdio.h> 
+#include<unistd.h> 
+int main(int argc,char *argv[]) 
+{ 
+if(access(argv[1],F_OK)==0) 
+printf("File %s exists.",argv[1]); 
+else 
+printf("File not exists."); 
+return 0; 
+} 
+
+slip 23-2
+ 
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <sys/stat.h> 
+#include <unistd.h> 
+ 
+void identifyFileType(const char *path) { 
+    struct stat fileStat; 
+ 
+    if (stat(path, &fileStat) == -1) { 
+        perror("Error in stat"); 
+        return; 
+    } 
+ 
+    if (S_ISREG(fileStat.st_mode)) { 
+        printf("%s is a regular file.\n", path); 
+    } else if (S_ISDIR(fileStat.st_mode)) { 
+        printf("%s is a directory.\n", path); 
+    } else if (S_ISCHR(fileStat.st_mode)) { 
+        printf("%s is a character device.\n", path); 
+    } else if (S_ISBLK(fileStat.st_mode)) { 
+        printf("%s is a block device.\n", path); 
+    } else if (S_ISFIFO(fileStat.st_mode)) {
+ printf("%s is a FIFO or pipe.\n", path); 
+    } else if (S_ISLNK(fileStat.st_mode)) { 
+        printf("%s is a symbolic link.\n", path); 
+    } else if (S_ISSOCK(fileStat.st_mode)) { 
+        printf("%s is a socket.\n", path); 
+    } else { 
+        printf("%s is of unknown type.\n", path); 
+    } 
+} 
+ 
+int main(int argc, char *argv[]) { 
+    if (argc != 2) { 
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]); 
+        return 1; 
+    } 
+ 
+    const char *filename = argv[1]; 
+ 
+    identifyFileType(filename); 
+ 
+    return 0; 
+} 
+ 
+
+slip 25-1
+  
+#include<stdlib.h> 
+#include<stdio.h> 
+#include<string.h> 
+main(int argc, char *argv[]) 
+{ 
+char d[50]; 
+if(argc==2) 
+{ 
+bzero(d,sizeof(d)); 
+strcat(d,"ls "); 
+strcat(d,"> "); 
+strcat(d,argv[1]); 
+system(d); 
+} 
+else 
+printf("\nInvalid No. of inputs");
+}
+
+   
+ slip 25-2
+ 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <fcntl.h> 
+#include <unistd.h> 
+ 
+int main() { 
+    
+    int fileDescriptor = open("output.txt", O_WRONLY | O_CREAT | O_TRUNC, 0666); 
+ 
+    if (fileDescriptor == -1) { 
+        perror("Error opening file"); 
+        exit(EXIT_FAILURE); 
+    } 
+
+    if (dup2(fileDescriptor, STDOUT_FILENO) == -1) { 
+        perror("Error duplicating file descriptor"); 
+        close(fileDescriptor); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+  
+    printf("This will be written to output.txt.\n"); 
+ 
+    if (dup2(STDOUT_FILENO, 1) == -1) { 
+        perror("Error restoring standard output"); 
+        exit(EXIT_FAILURE); 
+    } 
+ 
+    printf("This will be printed to the console.\n"); 
+ 
+    return 0; 
+} 
+ 
+ 
+
+ 
+
+
